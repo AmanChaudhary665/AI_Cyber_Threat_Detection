@@ -1,0 +1,39 @@
+{% extends "base.html" %}{% block title %}AI Network Intrusion Detection{% endblock %}
+{% block content %}
+<section class="hero"><div id="particles"></div><div class="container position-relative"><div class="row align-items-center g-5">
+ <div class="col-lg-6 reveal">
+  <span class="pill"><i class="bi bi-activity"></i> Live threat engine online</span>
+  <h1 class="display-4 fw-bold mt-3">AI Powered Network Intrusion Detection</h1>
+  <p class="lead text-secondary my-4">Enter a connection's details and a Random Forest model trained on NSL-KDD tells you in seconds whether it is normal traffic or an attack.</p>
+  <a href="{{ url_for('prediction.predict') }}" class="btn btn-neon me-2"><i class="bi bi-crosshair"></i> Detect Threat</a>
+  <a href="{{ url_for('main.dashboard') }}" class="btn btn-ghost"><i class="bi bi-speedometer2"></i> View Dashboard</a></div>
+ <div class="col-lg-6 reveal text-center">
+  <div id="lottie" class="lottie" data-src="{{ url_for('static', filename='lottie/shield.json') }}"></div>
+  <svg id="art" viewBox="0 0 400 400" class="hero-art"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#00D4FF"/><stop offset="1" stop-color="#7C3AED"/></linearGradient></defs>
+   <circle cx="200" cy="200" r="170" class="ring r1"/><circle cx="200" cy="200" r="130" class="ring r2"/>
+   <g class="links"><line x1="200" y1="200" x2="60" y2="90"/><line x1="200" y1="200" x2="340" y2="110"/><line x1="200" y1="200" x2="70" y2="320"/><line x1="200" y1="200" x2="335" y2="310"/></g>
+   <g class="nodes"><circle cx="60" cy="90" r="9"/><circle cx="340" cy="110" r="9"/><circle cx="70" cy="320" r="9"/><circle cx="335" cy="310" r="9" class="bad"/></g>
+   <path d="M200 90 L290 125 V205 C290 255 250 290 200 312 C150 290 110 255 110 205 V125 Z" fill="rgba(0,212,255,.08)" stroke="url(#g)" stroke-width="4" class="shield"/>
+   <path d="M160 200 l30 30 l55 -62" fill="none" stroke="#10B981" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+</div></div></section>
+
+<section class="container sec"><h2 class="sec-t reveal">Built for fast, clear decisions</h2><div class="row g-4">
+{% for i,t,d in [('lightning-charge','Real Time Detection','Get a verdict the moment you submit a connection.'),('bug','Attack Classification','See the attack type, not just a yes or no.'),('clock-history','Historical Records','Every prediction is saved and searchable.'),('bar-chart-line','Dashboard Analytics','Track traffic mix and trends in charts.'),('lock','Secure Monitoring','Predictions stay in your own local database.'),('cpu','ML Prediction','Random Forest trained on the NSL-KDD dataset.')] %}
+ <div class="col-md-6 col-lg-4 reveal"><div class="glass p-4 h-100"><div class="ico"><i class="bi bi-{{ i }}"></i></div><h5>{{ t }}</h5><p class="text-secondary mb-0">{{ d }}</p></div></div>
+{% endfor %}</div></section>
+
+<section class="container sec"><div class="row g-4 align-items-stretch">
+ <div class="col-lg-7 reveal"><div class="glass p-4 h-100"><h3 class="mb-4">How it works</h3>
+ {% for t,d in [('Enter connection details','Duration, protocol, service, flag and byte counts.'),('Model analyses it','The Random Forest compares it with patterns learned from NSL-KDD.'),('Get a verdict','Normal or attack, with the result saved to your history.')] %}
+ <div class="step"><b>{{ loop.index }}</b><div><h6 class="mb-1">{{ t }}</h6><p class="text-secondary mb-0">{{ d }}</p></div></div>{% endfor %}</div></div>
+ <div class="col-lg-5 reveal"><div class="glass p-4 h-100 text-center"><h3>Model accuracy</h3>
+  <div class="ring-meter mx-auto my-4" style="--p:{{ accuracy|default(98.0) }}"><span><span data-count="{{ accuracy|default(98.0) }}" data-dec="1">0</span>%</span></div>
+  <p class="text-secondary mb-0">Test accuracy on a 20% hold-out split.</p></div></div></div></section>
+
+<section class="container sec"><h2 class="sec-t reveal">Technologies used</h2><div class="d-flex flex-wrap gap-3 justify-content-center reveal">
+{% for t in ['Python','Flask','Scikit-learn','Pandas','SQLite','Bootstrap 5','Chart.js','Three.js','Particles.js','Lottie'] %}<span class="chip">{{ t }}</span>{% endfor %}</div></section>
+
+<section class="container sec"><h2 class="sec-t reveal">System architecture</h2><div class="timeline reveal">
+{% for t,d in [('Dataset','NSL-KDD KDDTrain+'),('Preprocess','Label-encode protocol, service, flag'),('Train','Random Forest, 100 trees'),('Serve','Flask predicts on form input'),('Store','SQLite keeps history'),('Visualise','Dashboard charts')] %}
+ <div class="tl"><i></i><h6>{{ t }}</h6><small class="text-secondary">{{ d }}</small></div>{% endfor %}</div></section>
+{% endblock %}

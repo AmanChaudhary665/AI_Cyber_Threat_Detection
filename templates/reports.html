@@ -1,0 +1,18 @@
+{% extends "base.html" %}{% block title %}Reports{% endblock %}
+{% block content %}
+<div class="container sec pt-4">
+ <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3 reveal">
+  <div><h2 class="mb-0"><i class="bi bi-file-earmark-text text-info"></i> Reports</h2><small class="text-secondary">Snapshot generated {{ summary.generated }}</small></div>
+  <div class="d-flex gap-2">
+   <a class="btn btn-neon" href="{{ url_for('main.report_pdf') }}"><i class="bi bi-file-earmark-pdf"></i> Download PDF</a>
+   <a class="btn btn-ghost" href="{{ url_for('main.report_csv') }}"><i class="bi bi-filetype-csv"></i> Download CSV</a></div></div>
+ <div class="row g-3">
+ {% for i,t,v,c in [('collection','Total predictions',summary.total,'info'),('shield-check','Normal',summary.normal,'ok'),('exclamation-octagon','Attacks',summary.attacks,'bad'),('bullseye','Detection rate',summary.detection_rate ~ '%','pur'),('bell','Open alerts',summary.open_alerts,'bad'),('diagram-2','Open incidents',summary.open_incidents,'pur')] %}
+  <div class="col-6 col-lg-4 reveal"><div class="glass p-3 stat {{ c }}"><i class="bi bi-{{ i }}"></i><small>{{ t }}</small><h2>{{ v }}</h2></div></div>{% endfor %}</div>
+ <div class="glass p-3 mt-3 reveal"><h6>Attack types</h6>
+  <div class="table-responsive"><table class="table table-dark mb-0"><thead><tr><th>Attack type</th><th>Count</th></tr></thead><tbody>
+  {% for name,count in summary.attack_types %}<tr><td>{{ name }}</td><td>{{ count }}</td></tr>
+  {% else %}<tr><td colspan="2" class="text-secondary text-center py-3">No attacks recorded yet.</td></tr>{% endfor %}</tbody></table></div>
+  <p class="small text-secondary mt-2 mb-0">CSV contains every stored prediction (confidence and source included). The PDF has the summary above plus the latest 25 attacks.</p></div>
+</div>
+{% endblock %}

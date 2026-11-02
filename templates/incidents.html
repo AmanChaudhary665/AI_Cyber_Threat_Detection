@@ -1,0 +1,26 @@
+{% extends "base.html" %}{% block title %}Incidents{% endblock %}
+{% block content %}
+<div class="container sec pt-4">
+ <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3 reveal">
+  <div><h2 class="mb-0"><i class="bi bi-diagram-2 text-info"></i> Incidents</h2><small class="text-secondary">Alerts of the same attack type close together in time are grouped into one incident.</small></div>
+  <div class="btn-group btn-group-sm">
+   <a class="btn btn-ghost py-1 {{ 'active' if not status }}" href="{{ url_for('alerts.incidents') }}">All</a>
+   {% for s in ['open','investigating','resolved'] %}<a class="btn btn-ghost py-1 {{ 'active' if status==s }}" href="{{ url_for('alerts.incidents', status=s) }}">{{ s|capitalize }} ({{ counts[s] }})</a>{% endfor %}</div></div>
+ <div class="glass p-3 reveal"><div class="table-responsive"><table class="table table-dark table-hover align-middle mb-0">
+  <thead><tr><th>#</th><th>Incident</th><th>Severity</th><th>Alerts</th><th>First seen</th><th>Last seen</th><th>Status</th><th>Action</th></tr></thead><tbody>
+  {% for i in incidents %}<tr>
+   <td>{{ i['id'] }}</td><td>{{ i['title'] }}</td>
+   <td><span class="badge sev-{{ i['severity'] }}">{{ i['severity'] }}</span></td>
+   <td>{{ i['alert_count'] }}</td><td class="text-nowrap">{{ i['first_seen'] }}</td><td class="text-nowrap">{{ i['last_seen'] }}</td>
+   <td><span class="badge st-{{ i['status'] }}">{{ i['status'] }}</span></td>
+   <td class="text-nowrap"><form method="post" action="{{ url_for('alerts.incident_status', incident_id=i['id']) }}" class="d-inline">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    {% if i['status']=='open' %}<button name="status" value="investigating" class="btn btn-sm btn-outline-info">Investigate</button>{% endif %}
+    {% if i['status']!='resolved' %}<button name="status" value="resolved" class="btn btn-sm btn-outline-success">Resolve</button>
+    {% else %}<button name="status" value="open" class="btn btn-sm btn-outline-secondary">Reopen</button>{% endif %}
+   </form></td></tr>
+  {% else %}<tr><td colspan="8" class="text-center text-secondary py-4">No incidents yet.</td></tr>{% endfor %}
+ </tbody></table></div>
+ <p class="small text-secondary mt-2 mb-0">Resolving an incident also resolves its alerts.</p></div>
+</div>
+{% endblock %}

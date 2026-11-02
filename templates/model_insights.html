@@ -1,0 +1,27 @@
+{% extends "base.html" %}{% block title %}Model insights{% endblock %}
+{% block content %}
+<div class="container sec pt-4">
+ <h2 class="reveal"><i class="bi bi-cpu text-info"></i> Model insights</h2>
+ <p class="text-secondary reveal">Random Forest on six connection features. Importance shows how much each feature helps the trees split classes overall.</p>
+ <div class="row g-3">
+  <div class="col-lg-6 reveal"><div class="glass p-4 h-100"><h6 class="mb-3">Feature importance</h6>
+   {% for f in importance %}<div class="why-row"><span class="why-name">{{ f.label }}</span><span class="why-bar"><i class="pos" style="width:{{ f.importance }}%"></i></span><span class="why-val">{{ f.importance }}%</span></div>{% endfor %}</div></div>
+  <div class="col-lg-6 reveal"><div class="glass p-4 h-100"><h6 class="mb-3">Accuracy</h6>
+   {% if metrics %}
+    <div class="row g-3">
+    {% if metrics.holdout %}<div class="col-6"><div class="kv"><small>Hold-out (20% of KDDTrain+)</small><b>{{ metrics.holdout.accuracy }}%</b></div></div>{% endif %}
+    {% if metrics.kddtest %}<div class="col-6"><div class="kv"><small>KDDTest+</small><b>{{ metrics.kddtest.accuracy }}%</b></div></div>{% endif %}</div>
+    {% if metrics.kddtest %}<p class="small text-secondary mt-3 mb-0">KDDTest+ includes attack types and patterns that never appear in the training file, so it is a harder, more honest test. {{ metrics.kddtest.skipped_unseen_category_rows }} rows were skipped because their protocol, service or flag was not seen in training.</p>{% endif %}
+   {% else %}
+    <p class="text-secondary mb-0">No metrics saved yet. Run <code>python -m ml.evaluate_model</code> once and refresh this page.</p>
+   {% endif %}</div></div>
+ </div>
+ {% if metrics and metrics.holdout %}
+ <div class="glass p-4 mt-3 reveal"><h6 class="mb-3">Per-class results (hold-out)</h6>
+  <div class="table-responsive"><table class="table table-dark mb-0"><thead><tr><th>Class</th><th>Precision</th><th>Recall</th><th>F1</th><th>Samples</th></tr></thead><tbody>
+  {% for name,r in metrics.holdout.classification_report.items() if r is mapping and name not in ['macro avg','weighted avg'] %}
+   <tr><td>{{ name }}</td><td>{{ '%.2f'|format(r['precision']) }}</td><td>{{ '%.2f'|format(r['recall']) }}</td><td>{{ '%.2f'|format(r['f1-score']) }}</td><td>{{ r['support']|int }}</td></tr>{% endfor %}
+  </tbody></table></div></div>
+ {% endif %}
+</div>
+{% endblock %}

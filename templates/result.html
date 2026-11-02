@@ -1,0 +1,25 @@
+{% extends "base.html" %}{% block title %}Result{% endblock %}
+{% block content %}
+{% set safe = (prediction|string|lower) == 'normal' %}
+<section class="container sec pt-5"><div class="row justify-content-center"><div class="col-lg-7 reveal">
+ <div class="glass result {{ 'ok' if safe else 'bad' }} p-4 p-md-5 text-center">
+  {% if confidence is defined %}<div class="ring-meter mx-auto mb-3" style="--p:{{ confidence }}"><span><span data-count="{{ confidence }}" data-dec="0">0</span>%</span></div>
+  {% else %}<div class="big-ico"><i class="bi bi-{{ 'shield-check' if safe else 'shield-exclamation' }}"></i></div>{% endif %}
+  <h1 class="fw-bold">{{ '✅ Safe Connection' if safe else '⚠ Threat Detected' }}</h1>
+  <p class="text-secondary">{{ 'This connection looks like normal traffic.' if safe else 'This connection matches a known attack pattern.' }}</p>
+  <div class="row g-3 text-start my-4">
+   <div class="col-sm-6"><div class="kv"><small>Prediction result</small><b>{{ prediction }}</b></div></div>
+   <div class="col-sm-6"><div class="kv"><small>Threat status</small><b>{{ 'Clear' if safe else 'High risk' }}</b></div></div>
+   <div class="col-sm-6"><div class="kv"><small>Timestamp</small><b id="ts" data-ts="{{ timestamp|default('') }}"></b></div></div>
+   <div class="col-sm-6"><div class="kv"><small>Threat level</small><div class="lvl"><i style="width:{{ '8%' if safe else '90%' }}"></i></div></div></div></div>
+  {% if explanation %}<div class="why text-start mb-3"><b><i class="bi bi-diagram-3"></i> Why this verdict</b>
+   <p class="small text-secondary mb-2">How much each input pushed the model towards <b>{{ prediction }}</b> (percentage points). Green supports it, red argues against it.</p>
+   {% for e in explanation %}<div class="why-row"><span class="why-name">{{ e.label }}{% if e.value is not none %} <small class="text-secondary">= {{ e.value }}</small>{% endif %}</span>
+    <span class="why-bar"><i class="{{ 'pos' if e.points >= 0 else 'neg' }}" style="width:{{ [e.points|abs, 100]|min }}%"></i></span>
+    <span class="why-val">{{ '%+.1f'|format(e.points) }}</span></div>{% endfor %}</div>{% endif %}
+  <div class="rec text-start"><b><i class="bi bi-lightbulb"></i> Recommendation</b><p class="mb-0 mt-1">{{ 'No action needed. Keep monitoring.' if safe else 'Block the source address, review firewall rules for this service, and check logs for related connections.' }}</p></div>
+  <a href="{{ url_for('prediction.predict') }}" class="btn btn-ghost mt-4"><i class="bi bi-arrow-left"></i> Back</a>
+  <a href="{{ url_for('main.dashboard') }}" class="btn btn-neon mt-4 ms-2">Open dashboard</a>
+ </div></div></div></section>
+{% endblock %}
+{% block scripts %}<script>window.RESULT={safe:{{ 'true' if safe else 'false' }}};</script>{% endblock %}

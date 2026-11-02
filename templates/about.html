@@ -1,0 +1,14 @@
+{% extends "base.html" %}{% block title %}About{% endblock %}
+{% block content %}
+<section class="container sec pt-5"><h1 class="fw-bold reveal">About CyberShield AI</h1><p class="lead text-secondary reveal">A machine learning system that flags suspicious network connections.</p>
+<div class="row g-4 mt-1">
+{% for i,t,d in [('journal-richtext','Project overview','Enter six connection details and get a normal or attack verdict, saved to a searchable history.'),('exclamation-diamond','Problem statement','Manual traffic review cannot keep up with the volume and variety of modern attacks.'),('hdd-network','Network security challenges','Zero-day attacks, encrypted traffic, alert fatigue and high false-positive rates.'),('cpu','Machine learning approach','Learn what attacks look like from labelled data instead of hand-written rules.'),('tree','Random Forest algorithm','Many decision trees vote on each connection, which resists overfitting and handles mixed features.'),('database','NSL-KDD dataset','A cleaned benchmark of labelled connections covering DoS, probe, R2L and U2R attacks.'),('rocket-takeoff','Future scope','Real packet capture, deep learning models, alert emails and SIEM integration.')] %}
+ <div class="col-md-6 col-lg-4 reveal"><div class="glass p-4 h-100"><div class="ico"><i class="bi bi-{{ i }}"></i></div><h5>{{ t }}</h5><p class="text-secondary mb-0">{{ d }}</p></div></div>{% endfor %}</div></section>
+<section class="container sec"><h2 class="sec-t reveal">Project timeline</h2><div class="timeline reveal">
+{% for t,d in [('Research','Study NSL-KDD'),('Model','Train Random Forest'),('Backend','Flask and SQLite'),('Frontend','Dashboard and charts'),('Testing','Validate predictions'),('Deploy','Go live')] %}<div class="tl"><i></i><h6>{{ t }}</h6><small class="text-secondary">{{ d }}</small></div>{% endfor %}</div></section>
+<section class="container sec"><h2 class="sec-t reveal">Team</h2><div class="row g-4 justify-content-center">
+{% for n,r in [('Team Member 1','Machine Learning'),('Team Member 2','Backend'),('Team Member 3','Frontend'),('Team Member 4','Testing')] %}
+ <div class="col-6 col-lg-3 reveal"><div class="glass p-4 text-center"><div class="avatar">{{ n[-1] }}</div><h6 class="mt-3 mb-0">{{ n }}</h6><small class="text-secondary">{{ r }}</small></div></div>{% endfor %}</div></section>
+<section class="container sec"><h2 class="sec-t reveal">Technology stack</h2><div class="row g-3">
+{% for i,t in [('filetype-py','Python'),('server','Flask'),('graph-up','Scikit-learn'),('database','SQLite'),('bootstrap','Bootstrap 5'),('pie-chart','Chart.js')] %}<div class="col-6 col-md-4 col-lg-2 reveal"><div class="glass p-3 text-center"><i class="bi bi-{{ i }} fs-2 text-info"></i><div>{{ t }}</div></div></div>{% endfor %}</div></section>
+{% endblock %}

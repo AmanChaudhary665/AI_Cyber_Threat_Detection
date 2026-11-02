@@ -1,0 +1,8 @@
+{% extends "base.html" %}{% block title %}Error {{ code }}{% endblock %}
+{% block content %}
+<section class="container sec pt-5 text-center"><div class="glass p-5 mx-auto" style="max-width:560px">
+ <div class="big-ico text-info"><i class="bi bi-exclamation-diamond"></i></div>
+ <h2 class="mt-3">{{ code }}</h2><p class="text-secondary">{{ message }}</p>
+ <a href="{{ url_for('main.home') }}" class="btn btn-neon">Back to home</a>
+</div></section>
+{% endblock %}

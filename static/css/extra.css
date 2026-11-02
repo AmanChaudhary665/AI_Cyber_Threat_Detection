@@ -1,0 +1,33 @@
+/* Styles for the pages added after the original UI. style.css is untouched. */
+.nav-badge{background:var(--bad);color:#fff;border-radius:99px;font-size:.7rem;vertical-align:top}
+.nav-menu{background:#111a30;border:1px solid rgba(0,212,255,.2)}
+.nav-menu .dropdown-item i{margin-right:8px;color:var(--cy)}
+.nav-menu .dropdown-item:hover{background:rgba(0,212,255,.1)}
+.dropdown-toggle.nav-link:after{vertical-align:.15em}
+
+.btn-ghost.active{background:rgba(0,212,255,.18);color:#fff}
+.btn-group .btn-ghost{padding:.35rem .9rem}
+.alert{border-radius:12px}
+
+/* severity + status badges */
+.sev-critical{background:rgba(239,68,68,.3)!important;color:#fecaca}
+.sev-high{background:rgba(239,68,68,.2)!important;color:var(--bad)}
+.sev-medium{background:rgba(245,158,11,.2)!important;color:#f59e0b}
+.sev-low{background:rgba(16,185,129,.2)!important;color:var(--ok)}
+.st-open{background:rgba(239,68,68,.15)!important;color:var(--bad)}
+.st-acknowledged,.st-investigating{background:rgba(0,212,255,.15)!important;color:var(--cy)}
+.st-resolved{background:rgba(16,185,129,.2)!important;color:var(--ok)}
+
+/* "Why this verdict" + feature importance bars */
+.why{background:rgba(255,255,255,.04);border-radius:12px;padding:14px}
+.why-row{display:grid;grid-template-columns:minmax(120px,38%) 1fr 56px;gap:10px;align-items:center;padding:5px 0}
+.why-name{font-size:.9rem}
+.why-bar{height:8px;border-radius:9px;background:rgba(255,255,255,.08);overflow:hidden;display:block}
+.why-bar i{display:block;height:100%;border-radius:9px}
+.why-bar i.pos{background:var(--ok)}.why-bar i.neg{background:var(--bad)}
+.why-val{text-align:right;font-family:'IBM Plex Mono',monospace;font-size:.85rem;color:#94a3b8}
+
+/* live monitor rows */
+#mon-body tr.attack-row{background:rgba(239,68,68,.08)}
+#mon-body tr.fresh{animation:rowin .6s ease}
+@keyframes rowin{from{opacity:0;transform:translateY(-8px)}}

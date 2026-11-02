@@ -1,0 +1,22 @@
+{% extends "base.html" %}{% block title %}Predict{% endblock %}
+{% block content %}
+<section class="container sec pt-5"><div class="row g-4">
+ <div class="col-lg-8 reveal"><div class="glass p-4 p-md-5">
+  <h2><i class="bi bi-crosshair text-info"></i> Analyse a connection</h2>
+  <p class="text-secondary">Fill in all six fields, then run the check.</p>
+  {% if error %}<div class="alert alert-danger"><i class="bi bi-exclamation-triangle"></i> {{ error }}</div>{% endif %}
+  <form method="POST" action="{{ url_for('prediction.predict') }}" class="needs-validation row g-3" novalidate id="pf">
+   <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+   <div class="col-md-6"><label class="form-label">Duration (seconds)</label><div class="input-group has-validation"><span class="input-group-text"><i class="bi bi-stopwatch"></i></span><input type="number" min="0" step="1" name="duration" class="form-control" placeholder="e.g. 0" required><div class="invalid-feedback">Enter a whole number, 0 or more.</div></div></div>
+   <div class="col-md-6"><label class="form-label">Protocol</label><div class="input-group has-validation"><span class="input-group-text"><i class="bi bi-diagram-3"></i></span><select name="protocol" class="form-select" required><option value="">Choose protocol</option>{% for p in protocols|default(['tcp','udp','icmp']) %}<option>{{ p }}</option>{% endfor %}</select><div class="invalid-feedback">Choose a protocol.</div></div></div>
+   <div class="col-md-6"><label class="form-label">Service</label><div class="input-group has-validation"><span class="input-group-text"><i class="bi bi-hdd-network"></i></span><select name="service" class="form-select" required><option value="">Choose service</option>{% for s in services|default(['http','ftp','smtp','private']) %}<option>{{ s }}</option>{% endfor %}</select><div class="invalid-feedback">Choose a service.</div></div></div>
+   <div class="col-md-6"><label class="form-label">Flag</label><div class="input-group has-validation"><span class="input-group-text"><i class="bi bi-flag"></i></span><select name="flag" class="form-select" required><option value="">Choose flag</option>{% for f in flags|default(['SF','S0','REJ']) %}<option>{{ f }}</option>{% endfor %}</select><div class="invalid-feedback">Choose a flag.</div></div></div>
+   <div class="col-md-6"><label class="form-label">Source bytes</label><div class="input-group has-validation"><span class="input-group-text"><i class="bi bi-box-arrow-up-right"></i></span><input type="number" min="0" step="1" name="src_bytes" class="form-control" placeholder="e.g. 181" required><div class="invalid-feedback">Enter a whole number, 0 or more.</div></div></div>
+   <div class="col-md-6"><label class="form-label">Destination bytes</label><div class="input-group has-validation"><span class="input-group-text"><i class="bi bi-box-arrow-in-down-left"></i></span><input type="number" min="0" step="1" name="dst_bytes" class="form-control" placeholder="e.g. 5450" required><div class="invalid-feedback">Enter a whole number, 0 or more.</div></div></div>
+   <div class="col-12"><button class="btn btn-neon glow w-100 py-3" id="pbtn"><span class="lbl"><i class="bi bi-shield-check"></i> Predict threat</span><span class="spinner-border spinner-border-sm d-none"></span></button></div>
+  </form></div></div>
+ <div class="col-lg-4 reveal"><div class="glass p-4 h-100"><h5 class="mb-4">Engine status</h5>
+ {% for i,t,v in [('wifi','Connection status','Connected'),('eye','AI monitoring','Active'),('cpu','Threat engine','Running'),('tree','Model','Random Forest')] %}
+  <div class="stat-row"><i class="bi bi-{{ i }}"></i><div><small class="text-secondary">{{ t }}</small><div><span class="dot"></span> {{ v }}</div></div></div>{% endfor %}</div></div>
+</div></section>
+{% endblock %}

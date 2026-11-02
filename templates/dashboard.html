@@ -1,0 +1,28 @@
+{% extends "base.html" %}{% block title %}Dashboard{% endblock %}
+{% block content %}
+{% set total = total|default(0) %}{% set normal = normal|default(0) %}{% set attacks = attacks|default(0) %}
+<div class="container-fluid dash"><div class="row">
+ <aside class="col-lg-2 side d-none d-lg-block"><nav class="nav flex-column">
+  <a class="nav-link" href="#overview"><i class="bi bi-grid"></i> Overview</a><a class="nav-link" href="#table"><i class="bi bi-list-check"></i> Predictions</a>
+  <a class="nav-link" href="#charts"><i class="bi bi-graph-up"></i> Analytics</a><a class="nav-link" href="{{ url_for('alerts.alerts') }}"><i class="bi bi-journal-text"></i> Security Logs</a>
+  <a class="nav-link" href="#" data-toast="Settings are not available yet."><i class="bi bi-gear"></i> Settings</a></nav></aside>
+ <div class="col-lg-10 p-3 p-lg-4">
+  <div class="row g-3" id="overview">
+  {% for i,t,v,c,d in [('collection','Total Predictions',total,'info',0),('shield-check','Normal Traffic',normal,'ok',0),('exclamation-octagon','Attack Traffic',attacks,'bad',0),('bullseye','Detection Rate',((attacks/total*100)|round(1) if total else 0),'pur',1)] %}
+   <div class="col-6 col-xl-3 reveal"><div class="glass p-3 stat {{ c }}"><i class="bi bi-{{ i }}"></i><small>{{ t }}</small><h2><span data-count="{{ v }}" data-dec="{{ d }}">0</span>{{ '%' if d }}</h2></div></div>{% endfor %}</div>
+  <div class="row g-3 mt-1" id="charts">
+   <div class="col-lg-4 reveal"><div class="glass p-3"><h6>Attack distribution</h6><canvas id="pie"></canvas></div></div>
+   <div class="col-lg-8 reveal"><div class="glass p-3"><h6>Prediction trends</h6><canvas id="line"></canvas></div></div>
+   <div class="col-12 reveal"><div class="glass p-3"><h6>Normal vs attack</h6><div style="height:220px"><canvas id="bar"></canvas></div></div></div></div>
+  <div class="glass p-3 mt-3 reveal" id="table"><div class="d-flex flex-wrap gap-2 justify-content-between mb-3"><h6 class="m-0 align-self-center">Recent activity</h6>
+   <form class="d-flex gap-2" method="GET" action="{{ url_for('main.dashboard') }}"><input name="search" value="{{ request.args.get('search','') }}" class="form-control form-control-sm" placeholder="Search protocol, service, result">
+   <select id="flt" class="form-select form-select-sm w-auto"><option value="">All</option><option value="normal">Normal</option><option value="attack">Attack</option></select><button class="btn btn-sm btn-neon">Search</button></form></div>
+   <div class="table-responsive"><table class="table table-dark table-hover align-middle"><thead><tr><th>Date</th><th>Protocol</th><th>Service</th><th>Flag</th><th>Prediction</th><th>Action</th></tr></thead><tbody id="tb">
+   {% for r in history|default([]) %}<tr data-pred="{{ 'normal' if r[4]=='normal' else 'attack' }}" data-date="{{ r[1][:10] }}"><td>{{ r[1] }}</td><td>{{ r[2] }}</td><td>{{ r[3] }}</td><td>{{ r[5] if r|length>5 else '—' }}</td>
+    <td><span class="badge {{ 'bg-ok' if r[4]=='normal' else 'bg-bad' }}">{{ r[4] }}</span></td>
+    <td><a class="btn btn-sm btn-outline-danger" data-confirm="Delete this record?" href="{{ url_for('main.delete', id=r[0]) }}"><i class="bi bi-trash"></i></a></td></tr>
+   {% else %}<tr class="empty"><td colspan="6" class="text-center text-secondary py-4">No predictions yet. <a href="{{ url_for('prediction.predict') }}">Run your first check.</a></td></tr>{% endfor %}</tbody></table></div>
+   <ul class="pagination pagination-sm justify-content-end mb-0" id="pg"></ul></div>
+ </div></div></div>
+{% endblock %}
+{% block scripts %}<script>window.DASH={labels:{{ labels|default([])|tojson }},values:{{ values|default([])|tojson }},normal:{{ normal }},attacks:{{ attacks }},trend:{{ trend|default({})|tojson }}};</script>{% endblock %}

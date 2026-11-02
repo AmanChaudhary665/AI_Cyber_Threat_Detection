@@ -1,0 +1,15 @@
+__pycache__/
+*.pyc
+.venv/
+venv/
+.env
+.pytest_cache/
+
+# runtime data
+instance/*.db
+*.db
+
+# large / generated files (keep them locally)
+dataset/*.txt
+model/*.pkl
+model/metrics.json
